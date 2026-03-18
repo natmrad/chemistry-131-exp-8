@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiment 25 — Reactions of Acids and Bases</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,600;1,400&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a2e4a;--teal:#0d7377;--teal2:#14a085;--amber:#e8a020;
+  --red:#c0392b;--green:#1e8449;--bg:#f4f1ec;--bg2:#eceae3;
+  --card:#ffffff;--border:#d8d4ca;--muted:#8a8072;--text:#1a1a1a;
+  --serif:'Source Serif 4',Georgia,serif;--sans:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+/* LOGIN */
+#screen-login{background:var(--navy);align-items:center;justify-content:center;padding:40px 20px}
+.login-box{background:var(--card);border-radius:4px;width:100%;max-width:460px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.lhdr{background:var(--navy);padding:32px 36px 28px;border-bottom:3px solid var(--teal)}
+.lexp{font-family:var(--mono);font-size:.7rem;color:var(--teal2);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.ltitle{font-family:var(--serif);font-size:1.55rem;color:#fff;font-weight:600;line-height:1.3}
+.lsub{font-size:.78rem;color:#a0aec0;margin-top:6px}
+.lbody{padding:32px 36px}
+.lfield{margin-bottom:18px}
+.lfield label{display:block;font-size:.73rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.lfield input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:3px;font-family:var(--sans);font-size:.9rem;background:var(--bg);transition:border-color .2s}
+.lfield input:focus{outline:none;border-color:var(--teal)}
+.btn-start{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:3px;font-family:var(--sans);font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s;margin-top:8px}
+.btn-start:hover{background:var(--teal2)}
+.lcaution{margin-top:20px;padding:12px 14px;background:#fff8e1;border-left:4px solid var(--amber);border-radius:0 3px 3px 0;font-size:.78rem;color:#7d5a00;line-height:1.5}
+.lcaution strong{display:block;margin-bottom:3px}
+/* TOP BAR */
+.topbar{background:var(--navy);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);gap:10px}
+.tb-left{font-family:var(--mono);font-size:.68rem;color:#90a4c0;white-space:nowrap}
+.tb-mid{font-family:var(--serif);font-size:.95rem;font-weight:600;flex:1;text-align:center}
+.tb-right{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.tb-student{font-family:var(--mono);font-size:.68rem;color:#90a4c0}
+#timer{font-family:var(--mono);font-size:.88rem;font-weight:600;color:#7dffda}
+#timer.warn{color:#ffaa44;animation:blink 1s infinite}
+#timer.danger{color:#ff6b6b;animation:blink .4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+/* TABS */
+.tabs{background:var(--bg2);border-bottom:2px solid var(--border);display:flex;overflow-x:auto;padding:0 20px}
+.tab{padding:11px 18px;font-size:.78rem;font-weight:600;color:var(--muted);border:none;background:none;cursor:default;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .2s,border-color .2s;white-space:nowrap;font-family:var(--sans);user-select:none}
+.tab:hover{color:var(--navy)}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+.tab.done{color:var(--green)}
+.tab.done::after{content:' ✓'}
+/* PANELS */
+.panel{display:none;padding:26px 22px;max-width:980px;width:100%;margin:0 auto}
+.panel.active{display:block}
+.snum{font-family:var(--mono);font-size:.66rem;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.stitle{font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--navy)}
+.sdesc{font-size:.85rem;color:var(--muted);margin-top:6px;line-height:1.6;margin-bottom:22px}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:19px 21px;margin-bottom:17px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.ctitle{font-weight:600;font-size:.87rem;color:var(--navy);margin-bottom:13px;border-bottom:1px solid var(--border);padding-bottom:8px}
+/* SPOT WELL */
+.spot-grid{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;padding:8px 0}
+.swrap{display:flex;flex-direction:column;align-items:center;gap:7px}
+.slabel{font-size:.72rem;font-weight:600;color:var(--muted);text-align:center}
+.swell{width:80px;height:80px;border-radius:50%;background:#e8f4fd;border:3px solid #b8d4e8;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:box-shadow .4s}
+.swell .liq{position:absolute;bottom:0;left:0;right:0;height:55%;border-radius:0 0 50% 50%;transition:height .5s,background-color .6s}
+.swell .phb{position:relative;z-index:2;font-family:var(--mono);font-size:.62rem;font-weight:600;color:rgba(255,255,255,.95);text-shadow:0 1px 2px rgba(0,0,0,.4);opacity:0;transition:opacity .3s}
+.swell.hs .phb{opacity:1}
+.swell.glow{box-shadow:0 0 18px 6px rgba(233,30,140,.5)}
+/* BTNS */
+.btn{padding:8px 16px;border:none;border-radius:3px;font-family:var(--sans);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+.bteal{background:var(--teal);color:#fff}.bteal:hover{background:var(--teal2)}
+.bnavy{background:var(--navy);color:#fff}.bnavy:hover{background:#253f63}
+.bamber{background:var(--amber);color:#fff}.bamber:hover{background:#d4900a}
+.boutline{background:transparent;border:1.5px solid var(--border);color:var(--navy)}.boutline:hover{border-color:var(--teal);color:var(--teal)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.brow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.dbtn{background:none;border:2px solid var(--teal);color:var(--teal);padding:8px 15px;border-radius:3px;font-family:var(--sans);font-size:.81rem;font-weight:600;cursor:pointer;transition:all .2s}
+.dbtn:hover{background:var(--teal);color:#fff}
+.dbtn:disabled{opacity:.38;cursor:not-allowed}
+/* TABLE */
+.ftable{width:100%;border-collapse:collapse;font-size:.82rem}
+.ftable th{background:var(--navy);color:#fff;padding:8px 11px;font-weight:600;font-size:.75rem;text-align:left}
+.ftable td{padding:7px 11px;border-bottom:1px solid var(--border);vertical-align:middle}
+.ftable tr:nth-child(even) td{background:var(--bg)}
+.finp{width:100%;padding:5px 9px;border:1.5px solid var(--border);border-radius:3px;font-family:var(--sans);font-size:.81rem;background:var(--bg);transition:border-color .2s}
+.finp:focus{outline:none;border-color:var(--teal)}
+.finp.given{background:#f0f9f8;color:var(--teal);font-weight:600;pointer-events:none;border-color:#a8d8d4}
+.finp.ok{border-color:var(--green);background:#f0fff4}
+.finp.bad{border-color:var(--red);background:#fff5f5}
+select.finp{cursor:pointer}
+/* DRA */
+.qblock{margin-bottom:22px;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.qhdr{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.qnum{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--navy)}
+.qpts{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.qtimer{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--teal)}
+.qtimer.warn{color:var(--amber)}
+.qtimer.exp{color:var(--red)}
+.qtext{padding:13px 15px 9px;font-size:.86rem;font-weight:500;color:var(--navy);line-height:1.65;font-style:italic}
+.qans{width:100%;min-height:108px;padding:11px 15px;border:none;border-top:1px solid var(--border);font-family:var(--sans);font-size:.84rem;resize:vertical;background:#fafaf8;line-height:1.6;transition:background .2s}
+.qans:focus{outline:none;background:#fff}
+.qans:disabled{background:#f5f3f0;color:#aaa;cursor:not-allowed}
+.qlocked{padding:9px 15px;background:#fff5f5;font-size:.77rem;color:var(--red);font-weight:600;display:none}
+/* INFO */
+.ibox{background:#e8f4fd;border-left:4px solid var(--teal);padding:10px 14px;border-radius:0 4px 4px 0;font-size:.81rem;color:#154360;line-height:1.6;margin-bottom:13px}
+.wbox{background:#fff8e1;border-left:4px solid var(--amber);padding:10px 14px;border-radius:0 4px 4px 0;font-size:.81rem;color:#7d5a00;line-height:1.6;margin-bottom:13px}
+.rbox{padding:8px 14px;background:var(--bg2);border-radius:3px;font-family:var(--mono);font-size:.87rem;font-weight:600;color:var(--teal);display:inline-block}
+
+/* MCQ */
+#screen-mcq{background:var(--bg);flex:1;padding:28px 22px;max-width:980px;width:100%;margin:0 auto}
+.mcq-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:opacity .3s}
+.mcq-qnum{font-family:var(--mono);font-size:.72rem;color:var(--teal);font-weight:600;letter-spacing:.05em}
+.mcq-qtext{font-size:.9rem;font-weight:500;color:var(--navy);line-height:1.65;margin:10px 0 14px}
+.mcq-opts{display:flex;flex-direction:column;gap:8px}
+.mcq-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:3px;cursor:pointer;transition:all .2s;font-size:.85rem}
+.mcq-opt:hover{border-color:var(--teal);background:#f0faf9}
+.mcq-opt.selected{border-color:var(--teal);background:#e0f5f4;font-weight:600}
+.mcq-opt input[type=radio]{accent-color:var(--teal);width:15px;height:15px;flex-shrink:0}
+.mcq-qtimer{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--teal)}
+.mcq-qtimer.warn{color:var(--amber)}
+.mcq-qtimer.exp{color:var(--red)}
+.mcq-score-banner{background:var(--navy);color:#fff;border-radius:4px;padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.mcq-score-num{font-family:var(--mono);font-size:2rem;font-weight:700;color:#7dffda}
+.mcq-feedback{font-size:.82rem;color:#a0c4d8;margin-top:4px}
+
+/* OVERLAY */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.76);z-index:9000;align-items:center;justify-content:center}
+#overlay.on{display:flex}
+.obox{background:#fff;border-radius:6px;padding:40px 48px;text-align:center;max-width:400px}
+.obox h2{font-family:var(--serif);font-size:1.45rem;color:var(--navy);margin-bottom:10px}
+.obox p{color:var(--muted);font-size:.88rem;line-height:1.6}
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:10px 20px;border-radius:4px;font-size:.82rem;font-weight:500;z-index:9999;transition:transform .3s;box-shadow:0 4px 18px rgba(0,0,0,.25);pointer-events:none;white-space:nowrap}
+#toast.on{transform:translateX(-50%) translateY(0)}
+.cbadge{display:inline-block;background:var(--teal);color:#fff;font-family:var(--mono);font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:10px}
+.lv{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap}
+@media(max-width:600px){.panel{padding:16px 12px}.topbar{padding:8px 12px}.lv{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div id="overlay"><div class="obox"><h2>⏱ Session Ended</h2><p>Your 90-minute session has expired.<br>Your report was downloaded automatically.<br><br>Please wait for your instructor.</p></div></div>
+
+<!-- LOGIN -->
+<div class="screen active" id="screen-login">
+  <div class="login-box">
+    <div class="lhdr">
+      <div class="lexp">Experiment 25 · Chemistry 120</div>
+      <div class="ltitle">Reactions of Acids and Bases</div>
+      <div class="lsub">A Guided Inquiry Virtual Lab</div>
+    </div>
+    <div class="lbody">
+      <div class="lfield"><label>Student Name</label><input id="inp-name" placeholder="First Last" autocomplete="off"></div>
+      <div class="lfield"><label>Student ID</label><input id="inp-id" placeholder="e.g. 20241234" autocomplete="off"></div>
+      <div class="lfield"><label>Section</label><input id="inp-sec" placeholder="e.g. L03" autocomplete="off"></div>
+      <button class="btn-start" onclick="startLab()">Begin Experiment →</button>
+      <div class="lcaution"><strong>⚠ Safety Reminder</strong>NaOH is a strong base. Avoid skin contact. Use approved eye protection. Wash with tap water if contact occurs.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LAB -->
+<div class="screen" id="screen-lab">
+  <div class="topbar">
+    <div class="tb-left">CHEM 120 · EXP 25</div>
+    <div class="tb-mid">Reactions of Acids and Bases</div>
+    <div class="tb-right">
+      <div class="tb-student" id="tb-student"></div>
+      <div id="timer">90:00</div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column">
+    <div class="tabs">
+      <button class="tab active" id="tab0">Part 1 — pH of Salts</button>
+      <button class="tab" id="tab1">Part 2 — Reaction</button>
+      <button class="tab" id="tab2">Part 3 — Standardize NaOH</button>
+      <button class="tab" id="tab3">Part 4 — Titration Curve</button>
+      <button class="tab" id="tab4">MCQ — Quiz</button>
+      <button class="tab" id="tab5">DRA — Analysis</button>
+    </div>
+
+<!-- ══ PART 1 ══ -->
+<div class="panel active" id="p0">
+  <div class="snum">Part 1 · Procedures 1-1 through 1-5</div>
+  <div class="stitle">pH of Salts</div>
+  <div class="sdesc">Dissolve NaCl, NaC₂H₃O₂, and NH₄NO₃ in distilled water on a spot plate. Test with pH paper, then add phenolphthalein indicator.</div>
+  <div class="ibox"><strong>Instructions:</strong> (1) Click each salt button to add it to its well. (2) Click "+ Phenolphthalein" to observe color changes. (3) Fill in the data table below and click Save.</div>
+  <div class="card">
+    <div class="ctitle">Spot Plate</div>
+    <div class="spot-grid" id="sg1"></div>
+    <div class="brow" id="sb1"></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Data Table</div>
+    <table class="ftable"><thead><tr><th>Salt</th><th>Approx. pH</th><th>Phenolphthalein Color</th><th>Acidic / Basic / Neutral?</th></tr></thead>
+    <tbody id="p1rows"></tbody></table>
+    <div class="brow"><button class="btn bteal" onclick="saveP1()">Save &amp; Continue →</button></div>
+  </div>
+</div>
+
+<!-- ══ PART 2 ══ -->
+<div class="panel" id="p1">
+  <div class="snum">Part 2 · Procedures 2-1 through 2-6</div>
+  <div class="stitle">Investigating the Reaction</div>
+  <div class="sdesc">Place an unknown weak acid (HA) on a spot plate, add phenolphthalein, then add NaOH drop by drop. Record every observation.</div>
+  <div class="card">
+    <div class="ctitle">Step-by-Step Instructions</div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:.84rem;line-height:1.7">
+      <div style="display:flex;gap:11px"><span style="background:var(--teal);color:#fff;border-radius:50%;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;margin-top:2px">1</span><span><strong>Proc. 2-1:</strong> Obtain ~2 mL of unknown weak acid. Click <em>Add Weak Acid</em> — 10 drops appear in the well below.</span></div>
+      <div style="display:flex;gap:11px"><span style="background:var(--teal);color:#fff;border-radius:50%;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;margin-top:2px">2</span><span><strong>Proc. 2-2:</strong> Click <em>Add Phenolphthalein</em>. Record the color in the observation box (should be <strong>colorless</strong> — acid, pH &lt; 8.2).</span></div>
+      <div style="display:flex;gap:11px"><span style="background:var(--teal);color:#fff;border-radius:50%;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;margin-top:2px">3</span><span><strong>Proc. 2-4/2-5:</strong> Click <em>+ 1 Drop NaOH</em> one drop at a time. Watch the pH and color. Continue until a <strong>permanent pink color</strong> appears (pH ≥ 8.2). Record observations.</span></div>
+      <div style="display:flex;gap:11px"><span style="background:var(--teal);color:#fff;border-radius:50%;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;margin-top:2px">4</span><span><strong>Proc. 2-5:</strong> Test the final solution with pH paper. Record the pH and describe how the color changed as you approached the endpoint.</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Virtual Spot Plate Simulation</div>
+    <div class="lv">
+      <!-- Beaker visual -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <div style="position:relative">
+          <svg id="bkr" width="150" height="170" viewBox="0 0 150 170">
+            <defs><clipPath id="bclip"><polygon points="22,12 128,12 116,158 34,158"/></clipPath></defs>
+            <polygon points="22,12 128,12 116,158 34,158" fill="#f0f8ff" stroke="#7fb3d3" stroke-width="2"/>
+            <rect id="bliq" x="22" y="70" width="106" height="88" clip-path="url(#bclip)" fill="#ddeeff" opacity=".85"/>
+            <polygon points="22,12 128,12 116,158 34,158" fill="none" stroke="#7fb3d3" stroke-width="2"/>
+            <line x1="12" y1="12" x2="138" y2="12" stroke="#7fb3d3" stroke-width="3" stroke-linecap="round"/>
+            <text id="bph" x="75" y="125" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="14" font-weight="600" fill="#1a2e4a">—</text>
+            <text id="bclr" x="75" y="108" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" fill="#666">empty</text>
+          </svg>
+        </div>
+        <div style="font-family:var(--mono);font-size:.7rem;color:var(--muted);text-align:center">Spot plate well<br>Unknown Weak Acid (HA)</div>
+        <div style="font-size:.78rem;color:var(--muted)">Drops NaOH added: <span class="cbadge" id="p2drops">0</span></div>
+        <div style="display:flex;flex-direction:column;gap:7px;width:150px">
+          <button class="dbtn" id="p2b1" onclick="doAddAcid()" style="justify-content:center;text-align:center">🧪 Add Weak Acid</button>
+          <button class="dbtn" id="p2b2" onclick="p2pp()" disabled style="justify-content:center;text-align:center">💧 Add Phenolphthalein</button>
+          <button class="dbtn" id="p2b3" onclick="p2drop()" disabled style="justify-content:center;text-align:center">+ 1 Drop NaOH</button>
+          <button class="btn boutline" onclick="p2reset()" style="font-size:.77rem;text-align:center;margin-top:2px">↺ Reset</button>
+        </div>
+      </div>
+      <!-- Observation boxes -->
+      <div style="flex:1;min-width:250px;display:flex;flex-direction:column;gap:13px">
+        <div>
+          <div style="font-size:.74rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">2-2. Color after adding phenolphthalein:</div>
+          <textarea class="qans" id="ob1" style="min-height:68px;border:1.5px solid var(--border);border-radius:3px" placeholder="Describe the color when phenolphthalein was added to the acid…"></textarea>
+        </div>
+        <div>
+          <div style="font-size:.74rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">2-4/2-5. Observations as NaOH was added drop by drop:</div>
+          <textarea class="qans" id="ob2" style="min-height:68px;border:1.5px solid var(--border);border-radius:3px" placeholder="What happened with each drop? When did color first appear? Describe the endpoint…"></textarea>
+        </div>
+        <div>
+          <div style="font-size:.74rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">pH paper result at endpoint:</div>
+          <textarea class="qans" id="ob3" style="min-height:55px;border:1.5px solid var(--border);border-radius:3px" placeholder="pH ≈ ____ at endpoint (permanent pink color)"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="brow"><button class="btn bteal" onclick="saveP2()">Save &amp; Continue →</button></div>
+  </div>
+</div>
+
+<!-- ══ PART 3 ══ -->
+<div class="panel" id="p2">
+  <div class="snum">Part 3 · Procedures 3-1 through 3-5</div>
+  <div class="stitle">Standardizing the NaOH Solution</div>
+  <div class="sdesc">Use KHP (potassium hydrogen phthalate, a primary standard) to determine the exact concentration of your NaOH solution. Perform two trials.</div>
+  <div class="ibox"><strong>Why standardize NaOH?</strong> NaOH absorbs CO₂ and moisture from air, so its actual concentration differs from what was prepared. Titrating a precisely weighed primary standard (KHP, MW = 204.23 g/mol) gives the true molarity.</div>
+  <div class="card">
+    <div class="ctitle">Pre-Lab Calculation</div>
+    <div style="font-family:var(--mono);font-size:.83rem;background:var(--bg2);padding:11px 15px;border-radius:3px;line-height:1.9">
+      Target: neutralize 10 mL of ~0.1 M NaOH<br>
+      n(NaOH) = 0.100 M × 0.010 L = 0.00100 mol<br>
+      KHP + NaOH → KNaP + H₂O &nbsp;(1 : 1 molar ratio)<br>
+      mass KHP = 0.00100 mol × 204.23 g/mol = <strong style="color:var(--teal)">0.204 g</strong>
+    </div>
+    <div style="font-size:.78rem;color:var(--muted);margin-top:7px">Your actual weighed mass will differ slightly — this is expected and normal.</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Titration Simulation — NaOH Buret into KHP Flask</div>
+    <div class="ibox" style="margin-bottom:16px">
+      <strong>How to run:</strong>
+      (1) Enter your KHP mass and initial buret reading for Trial 1.
+      (2) Click <em>Run Trial 1</em> — the buret drains, a drop falls into the flask, and the endpoint (pale pink) is reached automatically.
+      (3) Record the final buret volume shown, then repeat for Trial 2.
+      (4) Click <em>Calculate [NaOH]</em> to fill in concentrations.
+    </div>
+    <div class="lv" style="align-items:flex-start">
+      <!-- Buret + Flask SVG -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="font-family:var(--mono);font-size:.67rem;color:var(--muted);margin-bottom:2px">NaOH Buret</div>
+        <svg id="p3svg" width="90" height="290" viewBox="0 0 90 290">
+          <!-- Buret body -->
+          <rect x="30" y="8" width="22" height="180" rx="2" fill="#f0f8ff" stroke="#7fb3d3" stroke-width="1.5"/>
+          <!-- Liquid -->
+          <rect id="p3liq" x="31" y="9" width="20" height="178" fill="#3498db" opacity=".55"/>
+          <!-- Tick marks -->
+          <line x1="30" y1="8"  x2="37" y2="8"  stroke="#aaa" stroke-width="1"/>  <text x="28" y="12" text-anchor="end" font-size="8" fill="#888" font-family="monospace"> 0</text>
+          <line x1="30" y1="44" x2="37" y2="44" stroke="#aaa" stroke-width="1"/>  <text x="28" y="48" text-anchor="end" font-size="8" fill="#888" font-family="monospace">10</text>
+          <line x1="30" y1="80" x2="37" y2="80" stroke="#aaa" stroke-width="1"/>  <text x="28" y="84" text-anchor="end" font-size="8" fill="#888" font-family="monospace">20</text>
+          <line x1="30" y1="116" x2="37" y2="116" stroke="#aaa" stroke-width="1"/> <text x="28" y="120" text-anchor="end" font-size="8" fill="#888" font-family="monospace">30</text>
+          <line x1="30" y1="152" x2="37" y2="152" stroke="#aaa" stroke-width="1"/> <text x="28" y="156" text-anchor="end" font-size="8" fill="#888" font-family="monospace">40</text>
+          <line x1="30" y1="188" x2="37" y2="188" stroke="#aaa" stroke-width="1"/> <text x="28" y="192" text-anchor="end" font-size="8" fill="#888" font-family="monospace">50</text>
+          <!-- Reading line (red, moves with liquid surface) -->
+          <line id="p3rl" x1="52" y1="9" x2="72" y2="9" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <text id="p3rt" x="74" y="12" font-size="8" fill="#c0392b" font-family="monospace">0.00</text>
+          <!-- Tip -->
+          <polygon points="35,188 47,188 41,208" fill="#ccc" stroke="#aaa" stroke-width="1"/>
+          <!-- Animated drop -->
+          <ellipse id="p3drp" cx="41" cy="213" rx="0" ry="0" fill="#3498db" opacity=".75"/>
+          <!-- Flask (Erlenmeyer shape) -->
+          <path d="M 16,242 L 28,218 L 54,218 L 66,242 Q 70,264 41,270 Q 12,264 16,242 Z" fill="#f0f8ff" stroke="#7fb3d3" stroke-width="1.5"/>
+          <ellipse id="p3flask" cx="41" cy="248" rx="20" ry="11" fill="#e8f4fd" opacity=".85"/>
+          <text id="p3flasklbl" x="41" y="252" text-anchor="middle" font-size="8" font-family="'DM Sans',sans-serif" fill="#555">KHP soln</text>
+          <!-- Vol readout -->
+          <text id="p3vrd" x="41" y="285" text-anchor="middle" font-size="9" fill="var(--teal)" font-family="monospace" font-weight="600">0.00 mL used</text>
+        </svg>
+      </div>
+      <!-- Data table -->
+      <div style="flex:1;min-width:280px">
+        <table class="ftable" style="margin-bottom:13px">
+          <thead><tr><th></th><th>Trial 1</th><th>Trial 2</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600">Mass KHP (g)</td>
+              <td><input class="finp" id="k1" type="number" step="0.001" placeholder="0.15–0.25 g"></td>
+              <td><input class="finp" id="k2" type="number" step="0.001" placeholder="0.15–0.25 g"></td></tr>
+            <tr><td style="font-weight:600">Initial buret (mL)</td>
+              <td><input class="finp" id="vi1" type="number" step="0.01" placeholder="e.g. 0.12"></td>
+              <td><input class="finp" id="vi2" type="number" step="0.01" placeholder="e.g. 0.08"></td></tr>
+            <tr><td style="font-weight:600">Final buret (mL)</td>
+              <td><input class="finp given" id="vf1" placeholder="auto" readonly></td>
+              <td><input class="finp given" id="vf2" placeholder="auto" readonly></td></tr>
+            <tr><td style="font-weight:600">Vol NaOH used (mL)</td>
+              <td><input class="finp given" id="vc1" placeholder="calc" readonly></td>
+              <td><input class="finp given" id="vc2" placeholder="calc" readonly></td></tr>
+            <tr><td style="font-weight:600">[NaOH] (M)</td>
+              <td><input class="finp given" id="cn1" placeholder="calc" readonly></td>
+              <td><input class="finp given" id="cn2" placeholder="calc" readonly></td></tr>
+          </tbody>
+        </table>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="dbtn" id="bt1" onclick="runP3(1)">▶ Run Trial 1</button>
+          <button class="dbtn" id="bt2" onclick="runP3(2)" disabled>▶ Run Trial 2</button>
+        </div>
+        <div id="p3ep" style="margin-top:9px;font-size:.81rem;color:var(--green);font-weight:600;display:none"></div>
+      </div>
+    </div>
+    <div class="brow" style="margin-top:14px">
+      <button class="btn bteal" onclick="calcP3()">Calculate [NaOH]</button>
+      <button class="btn bnavy" onclick="saveP3()">Save &amp; Continue →</button>
+    </div>
+    <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:.84rem;font-weight:600;color:var(--navy)">Average [NaOH] =</span>
+      <span class="rbox" id="p3avg">—</span>
+      <span style="font-size:.78rem;color:var(--muted)">M &nbsp;(used in Part 4)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PART 4 ══ -->
+<div class="panel" id="p3">
+  <div class="snum">Part 4 · Procedures 4-1 through 4-5</div>
+  <div class="stitle">Quantitative Measurements — Titration Curve</div>
+  <div class="sdesc">Titrate 20 mL of unknown weak acid with standardized NaOH. Record pH at each addition and plot the curve. Identify the equivalence point and ½-neutralization point.</div>
+  <div class="card">
+    <div class="ctitle">Setup</div>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end">
+      <div><label style="font-size:.78rem;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Unknown Acid</label>
+        <select class="finp" id="acode" style="width:170px">
+          <option value="A">Unknown A</option><option value="B">Unknown B</option><option value="C">Unknown C</option>
+        </select></div>
+      <div><label style="font-size:.78rem;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Initial pH</label>
+        <span class="rbox" id="p4iph">—</span></div>
+      <div><label style="font-size:.78rem;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">[NaOH]</label>
+        <span class="rbox" id="p4nc">from Part 3</span></div>
+      <button class="btn bteal" onclick="initP4()">Initialize →</button>
+    </div>
+  </div>
+  <div id="p4main" style="display:none">
+    <div class="card">
+      <div class="ctitle">Titration — Add NaOH and Record Data Points</div>
+      <div class="lv">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:9px">
+          <div id="p4bwrap"></div>
+          <div style="text-align:center">
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:2px">Vol NaOH added</div>
+            <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--navy)" id="p4vd">0.00 mL</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:7px;margin-bottom:2px">Current pH</div>
+            <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--teal)" id="p4phd">—</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:140px">
+            <button class="dbtn" onclick="addP4(1.0)" style="text-align:center">+ 1.0 mL NaOH</button>
+            <button class="dbtn" onclick="addP4(0.5)" style="text-align:center">+ 0.5 mL NaOH</button>
+            <button class="dbtn" onclick="addP4(0.1)" style="text-align:center">+ 0.1 mL (near EP)</button>
+            <button class="btn boutline" onclick="recP4()" style="font-size:.77rem;text-align:center">📌 Record Point</button>
+          </div>
+          <button class="btn bamber" onclick="findEP()" style="width:140px;margin-top:2px">📊 Find Equiv. Point</button>
+        </div>
+        <div style="flex:1;min-width:290px">
+          <canvas id="phchart" width="510" height="330" style="max-width:100%;border-radius:4px;background:#fafafa"></canvas>
+          <div style="font-size:.74rem;color:var(--muted);margin-top:5px;display:flex;gap:13px;flex-wrap:wrap">
+            <span><span style="color:var(--teal)">●</span> Recorded</span>
+            <span><span style="color:var(--red)">—</span> Equiv. point</span>
+            <span><span style="color:var(--amber)">—</span> ½-neutralization</span>
+          </div>
+          <div id="p4ep" style="margin-top:9px;font-family:var(--mono);font-size:.79rem;color:var(--navy);display:none;background:var(--bg2);padding:9px 13px;border-radius:3px;line-height:1.8"></div>
+        </div>
+      </div>
+      <div style="margin-top:16px"><div class="ctitle" style="margin-bottom:8px">Recorded Data Points</div>
+        <div style="max-height:185px;overflow-y:auto">
+          <table class="ftable"><thead><tr><th>#</th><th>Vol NaOH (mL)</th><th>pH</th><th>Note</th></tr></thead>
+          <tbody id="p4tb"></tbody></table>
+        </div>
+      </div>
+      <div class="brow"><button class="btn bteal" onclick="saveP4()">Save &amp; Go to DRA →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DRA ══ -->
+<div class="panel" id="p4">
+  <div class="snum">DRA · Data Recording &amp; Analysis</div>
+  <div class="stitle">Analysis Questions</div>
+  <div class="sdesc">Answer all 5 questions. Each question has an individual 5-minute timer that starts on your first keystroke and locks the answer when it expires. Pasting is not allowed.</div>
+  <div class="wbox">⏱ Timers start individually when you begin typing each answer. Work directly — do not copy-paste.</div>
+
+  <div class="qblock"><div class="qhdr"><div><div class="qnum">Q1 — Salt Classification &amp; Parent Acid/Base</div><div class="qpts">/ 2 pts</div></div><div class="qtimer" id="qt1">⏱ waiting…</div></div>
+  <div class="qtext">From your Part 1 results, classify each salt (NaCl, NaC₂H₃O₂, NH₄NO₃) as acidic, basic, or neutral. For each, identify the parent acid and parent base that produced it, and state whether each parent is strong or weak. Then write one generalization: how does the acidity of a salt relate to the strength of its parent acid and base?</div>
+  <textarea class="qans" id="dra1" placeholder="Write your answer here…"></textarea>
+  <div class="qlocked" id="ql1">⏱ Time expired — answer locked.</div></div>
+
+  <div class="qblock"><div class="qhdr"><div><div class="qnum">Q2 — Neutralization Reaction &amp; Species Present</div><div class="qpts">/ 2 pts</div></div><div class="qtimer" id="qt2">⏱ waiting…</div></div>
+  <div class="qtext">From Part 2: (a) Describe your observations when NaOH was added dropwise to the unknown weak acid. (b) Write the general neutralization equation: HA + NaOH → ? (c) What species were present in the beaker (i) before the equivalence point, (ii) at the equivalence point, and (iii) after the equivalence point?</div>
+  <textarea class="qans" id="dra2" placeholder="Write your answer here…"></textarea>
+  <div class="qlocked" id="ql2">⏱ Time expired — answer locked.</div></div>
+
+  <div class="qblock"><div class="qhdr"><div><div class="qnum">Q3 — NaOH Standardization</div><div class="qpts">/ 2 pts</div></div><div class="qtimer" id="qt3">⏱ waiting…</div></div>
+  <div class="qtext">From Part 3: (a) Explain why NaOH must be standardized before use in a precise titration. (b) Write the balanced reaction between KHP (KHC₈H₄O₄) and NaOH. (c) Using your titration data, show the calculation of [NaOH] for each trial and compute the average concentration.</div>
+  <textarea class="qans" id="dra3" placeholder="Write your answer here…"></textarea>
+  <div class="qlocked" id="ql3">⏱ Time expired — answer locked.</div></div>
+
+  <div class="qblock"><div class="qhdr"><div><div class="qnum">Q4 — Titration Curve Analysis</div><div class="qpts">/ 2 pts</div></div><div class="qtimer" id="qt4">⏱ waiting…</div></div>
+  <div class="qtext">From Part 4: (a) How many mL of NaOH were needed to reach the equivalence point? Calculate the molarity of the unknown weak acid (assume monoprotic, 20 mL used). (b) At the ½-neutralization point, what is the pH, and what does this tell you about Kₐ and pKₐ? (c) Was phenolphthalein a good indicator choice? Justify using the equivalence point pH.</div>
+  <textarea class="qans" id="dra4" placeholder="Write your answer here…"></textarea>
+  <div class="qlocked" id="ql4">⏱ Time expired — answer locked.</div></div>
+
+  <div class="qblock"><div class="qhdr"><div><div class="qnum">Q5 — Written Procedure</div><div class="qpts">/ 2 pts</div></div><div class="qtimer" id="qt5">⏱ waiting…</div></div>
+  <div class="qtext">Write a concise numbered experimental procedure covering all four parts of this experiment. Include reagents, equipment, volumes, masses, indicator choice, and calculations performed. Aim for at least 12 numbered steps.</div>
+  <textarea class="qans" id="dra5" placeholder="1. Obtain a spot plate and three salts (NaCl, NaC₂H₃O₂, NH₄NO₃).&#10;2. …" style="min-height:135px"></textarea>
+  <div class="qlocked" id="ql5">⏱ Time expired — answer locked.</div></div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:40px;margin-top:6px">
+    <div><div style="font-size:.72rem;font-weight:700;color:var(--navy)">Total Available</div>
+      <div style="font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--navy)">10 pts</div></div>
+    <button class="btn bteal" style="padding:13px 26px;font-size:.9rem" onclick="dlReport()">⬇ Download Report (HTML → PDF)</button>
+  </div>
+</div>
+
+
+    <!-- ══ MCQ SCREEN ══ -->
+    <div style="display:none;flex:1;flex-direction:column" id="screen-mcq">
+      <div style="padding:26px 22px;max-width:980px;width:100%;margin:0 auto">
+        <div class="snum">Post-Lab Quiz</div>
+        <div class="stitle">Multiple Choice Questions</div>
+        <div class="sdesc" style="margin-bottom:20px">Answer all 4 questions. Each question has a 90-second timer. Questions lock and advance automatically when time expires.</div>
+        <div id="mcqBody"></div>
+      </div>
+    </div>
+
+  </div><!-- end lab shell -->
+</div><!-- end screen-lab -->
+
+<script>
+// ══ GLOBALS ══
+const STU={name:'',id:'',sec:''};
+let timerSecs=5400, timerInt=null;
+const SALTS=[
+  {id:'nacl', name:'NaCl',       pH:7.0, pp:'colorless', abz:'Neutral'},
+  {id:'nac2', name:'NaC₂H₃O₂',  pH:8.9, pp:'pink',      abz:'Basic'},
+  {id:'nh4',  name:'NH₄NO₃',    pH:5.2, pp:'colorless', abz:'Acidic'},
+];
+const ACIDS={A:{Ka:1.8e-5,C:0.080},B:{Ka:1.34e-5,C:0.085},C:{Ka:1.38e-4,C:0.075}};
+let p1s={};
+let p2drops=0,p2hasAcid=false,p2hasPP=false;
+let p3anim=false,p3res=[null,null,null];
+let p4={acid:null,nc:0.1,vol:0,pts:[],ep:null};
+let qtimers={},qsecs={};
+
+// TOAST
+function toast(m,ms=2800){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),ms);}
+
+// SESSION TIMER
+function startTimer(){
+  timerInt=setInterval(()=>{
+    timerSecs--;
+    const m=Math.floor(timerSecs/60),s=timerSecs%60;
+    const el=document.getElementById('timer');
+    el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    el.className=timerSecs<=60?'danger':timerSecs<=180?'warn':'';
+    if(timerSecs===180) toast('⚠ 3 minutes remaining!',4000);
+    if(timerSecs<=0){clearInterval(timerInt);dlReport();setTimeout(()=>document.getElementById('overlay').classList.add('on'),800);}
+  },1000);
+}
+
+// LOGIN
+function startLab(){
+  const n=document.getElementById('inp-name').value.trim();
+  const id=document.getElementById('inp-id').value.trim();
+  if(!n||!id){toast('⚠ Enter your name and student ID.');return;}
+  STU.name=n;STU.id=id;STU.sec=document.getElementById('inp-sec').value.trim();
+  document.getElementById('tb-student').textContent=n+' · '+id;
+  document.getElementById('screen-login').classList.remove('active');
+  document.getElementById('screen-lab').classList.add('active');
+  buildP1();
+  startTimer();
+}
+
+// TABS
+function goTab(n){
+  // n=0-3: lab panels, n=4: MCQ, n=5: DRA
+  document.querySelectorAll('.panel').forEach((p,i)=>{p.classList.toggle('active',i===n && n<4);});
+  const mcqScr=document.getElementById('screen-mcq');
+  if(mcqScr) mcqScr.style.display=(n===4)?'flex':'none';
+  // DRA is panel index 4 in the DOM (0-based: p0=0,p1=1,p2=2,p3=3,p4=4)
+  const panels=document.querySelectorAll('.panel');
+  if(n===5 && panels[4]) panels[4].classList.add('active');
+  if(n!==5 && panels[4]) panels[4].classList.remove('active');
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+}
+
+// ── PART 1 ──
+function pH2col(pH){
+  if(pH<3.5)return'#e74c3c';if(pH<5.5)return'#e67e22';if(pH<6.8)return'#f1c40f';
+  if(pH<7.2)return'#2ecc71';if(pH<8.5)return'#1abc9c';if(pH<10)return'#3498db';return'#8e44ad';
+}
+function buildP1(){
+  const g=document.getElementById('sg1'),b=document.getElementById('sb1'),r=document.getElementById('p1rows');
+  SALTS.forEach(s=>{
+    p1s[s.id]={hs:false,hp:false};
+    g.insertAdjacentHTML('beforeend',`<div class="swrap"><div class="swell" id="sw${s.id}"><div class="liq" id="sl${s.id}" style="background:#ddeeff;height:55%"></div><div class="phb" id="sp${s.id}"></div></div><div class="slabel">${s.name}</div></div>`);
+    r.insertAdjacentHTML('beforeend',`<tr><td style="font-weight:600">${s.name}</td><td><input class="finp" id="rph${s.id}" type="number" step="0.1" min="0" max="14" placeholder="~pH"></td><td><select class="finp" id="rpp${s.id}"><option value="">—</option><option value="colorless">Colorless</option><option value="pink">Pink/Fuchsia</option></select></td><td><select class="finp" id="rab${s.id}"><option value="">—</option><option>Acidic</option><option>Basic</option><option>Neutral</option></select></td></tr>`);
+  });
+  b.innerHTML=`<button class="btn boutline" onclick="addSalt('nacl')">+ Add NaCl</button><button class="btn boutline" onclick="addSalt('nac2')">+ Add NaC₂H₃O₂</button><button class="btn boutline" onclick="addSalt('nh4')">+ Add NH₄NO₃</button><button class="btn bamber" onclick="addPP1()">+ Phenolphthalein (all)</button><button class="btn boutline" onclick="resetP1()">↺ Reset</button>`;
+}
+function addSalt(id){
+  const s=SALTS.find(x=>x.id===id);p1s[id].hs=true;
+  const liq=document.getElementById('sl'+id),well=document.getElementById('sw'+id),badge=document.getElementById('sp'+id);
+  liq.style.background=pH2col(s.pH);liq.style.height='65%';
+  well.classList.add('hs');badge.textContent='pH '+s.pH.toFixed(1);
+  toast(s.name+' dissolved in distilled water.');
+}
+function addPP1(){
+  let any=false;
+  SALTS.forEach(s=>{
+    if(!p1s[s.id].hs)return;any=true;p1s[s.id].hp=true;
+    if(s.pp==='pink'){document.getElementById('sl'+s.id).style.background='#e91e8c';document.getElementById('sw'+s.id).classList.add('glow');}
+  });
+  if(!any){toast('⚠ Add at least one salt first.');return;}
+  toast('Phenolphthalein added — basic solutions turn pink!');
+}
+function resetP1(){SALTS.forEach(s=>{p1s[s.id]={hs:false,hp:false};document.getElementById('sl'+s.id).style.cssText='background:#ddeeff;height:55%';document.getElementById('sw'+s.id).className='swell';document.getElementById('sp'+s.id).textContent='';});}
+function saveP1(){
+  const ok=SALTS.every(s=>document.getElementById('rph'+s.id).value&&document.getElementById('rpp'+s.id).value&&document.getElementById('rab'+s.id).value);
+  if(!ok){toast('⚠ Fill in all rows before continuing.');return;}
+  document.getElementById('tab0').classList.add('done');toast('✓ Part 1 saved!',1800);setTimeout(()=>goTab(1),600);
+}
+
+// ── PART 2 ──
+let p2liqY=70;
+function setBeaker(color,phTxt,clrTxt){
+  document.getElementById('bliq').setAttribute('fill',color);
+  document.getElementById('bph').textContent=phTxt;
+  document.getElementById('bclr').textContent=clrTxt;
+}
+function doAddAcid(){
+  p2hasAcid=true;
+  document.getElementById('p2b1').disabled=true;
+  document.getElementById('p2b2').disabled=false;
+  setBeaker('#c8e6c9','pH 3.2','colorless');
+  toast('Weak acid (HA) added — pH ~3.2, colorless.');
+}
+function p2pp(){
+  p2hasPP=true;
+  document.getElementById('p2b2').disabled=true;
+  document.getElementById('p2b3').disabled=false;
+  toast('Phenolphthalein added — colorless in acid (pH < 8.2).');
+}
+function p2drop(){
+  p2drops++;
+  document.getElementById('p2drops').textContent=p2drops;
+  let pH;
+  if(p2drops<6)       pH=3.2+p2drops*0.26;
+  else if(p2drops<11) pH=4.5+(p2drops-6)*0.3;
+  else if(p2drops<15) pH=6.0+(p2drops-11)*0.52;
+  else if(p2drops===15) pH=8.35;
+  else if(p2drops===16) pH=9.90;
+  else                  pH=Math.min(12.5,9.9+(p2drops-16)*0.36);
+  const isEP=pH>=8.2;
+  const col=isEP?'#e91e8c':pH2col(pH);
+  const clrTxt=isEP?'pink (endpoint!)':'colorless';
+  setBeaker(col,'pH '+pH.toFixed(2),clrTxt);
+  if(isEP&&p2drops===15){document.getElementById('bkr').style.filter='drop-shadow(0 0 10px #e91e8c88)';toast('🔴 Endpoint! Permanent pink — pH '+pH.toFixed(2),3500);}
+}
+function p2reset(){p2drops=0;p2hasAcid=false;p2hasPP=false;document.getElementById('p2drops').textContent='0';document.getElementById('p2b1').disabled=false;document.getElementById('p2b2').disabled=true;document.getElementById('p2b3').disabled=true;document.getElementById('bkr').style.filter='';setBeaker('#ddeeff','—','empty');}
+function saveP2(){document.getElementById('tab1').classList.add('done');toast('✓ Part 2 saved!',1800);setTimeout(()=>goTab(2),600);}
+
+// ── PART 3 ──
+function updP3Buret(pct){
+  const fh=Math.max(0,(pct/100)*178),topY=9+(178-fh);
+  document.getElementById('p3liq').setAttribute('y',topY);
+  document.getElementById('p3liq').setAttribute('height',fh);
+  const vu=((100-pct)/100)*50;
+  document.getElementById('p3vrd').textContent=vu.toFixed(2)+' mL used';
+  document.getElementById('p3rl').setAttribute('y1',topY);document.getElementById('p3rl').setAttribute('y2',topY);
+  document.getElementById('p3rt').setAttribute('y',topY+3);document.getElementById('p3rt').textContent=vu.toFixed(2);
+}
+function runP3(t){
+  const khp=parseFloat(document.getElementById('k'+t).value);
+  const vi=parseFloat(document.getElementById('vi'+t).value);
+  if(isNaN(khp)||khp<0.10||khp>0.30){toast('⚠ Enter KHP mass 0.10–0.30 g.');return;}
+  if(isNaN(vi)){toast('⚠ Enter initial buret volume.');return;}
+  if(p3anim){toast('⚠ Titration is already running.');return;}
+  const vol=(khp/204.23/0.100)*1000;
+  const vf=vi+vol;
+  p3res[t]={khp,vi,vf,vol};
+  p3anim=true;
+  const startPct=100-(vi/50)*100;
+  const endPct=Math.max(0,100-(vf/50)*100);
+  let pct=startPct;
+  updP3Buret(pct);
+  const iv=setInterval(()=>{
+    pct=Math.max(pct-0.9,endPct);
+    updP3Buret(pct);
+    // Animate drop
+    const drp=document.getElementById('p3drp');
+    const cy=parseFloat(drp.getAttribute('cy'))||213;
+    if(cy<255){drp.setAttribute('cy',cy+3);drp.setAttribute('rx',2.5);drp.setAttribute('ry',3.5);drp.setAttribute('opacity','.7');}
+    else{drp.setAttribute('cy',213);drp.setAttribute('rx',0);drp.setAttribute('ry',0);}
+    if(pct<=endPct){
+      clearInterval(iv);p3anim=false;
+      document.getElementById('vf'+t).value=vf.toFixed(2);
+      document.getElementById('p3flask').setAttribute('fill','#f8bbd0');
+      document.getElementById('p3flasklbl').textContent='pale pink!';
+      document.getElementById('p3ep').style.display='block';
+      document.getElementById('p3ep').textContent='✓ Trial '+t+' — pale pink endpoint reached! Final buret: '+vf.toFixed(2)+' mL';
+      if(t===1)document.getElementById('bt2').disabled=false;
+      document.getElementById('bt'+t).disabled=true;
+      toast('✓ Trial '+t+' complete. Vf = '+vf.toFixed(2)+' mL');
+    }
+  },35);
+}
+function calcP3(){
+  let sum=0,cnt=0,ok=true;
+  [1,2].forEach(t=>{
+    const k=parseFloat(document.getElementById('k'+t).value);
+    const vi=parseFloat(document.getElementById('vi'+t).value);
+    const vf=parseFloat(document.getElementById('vf'+t).value);
+    if(isNaN(k)||isNaN(vi)||isNaN(vf)){ok=false;return;}
+    const vc=vf-vi,conc=(k/204.23)/(vc/1000);
+    document.getElementById('vc'+t).value=vc.toFixed(2);
+    document.getElementById('cn'+t).value=conc.toFixed(4);
+    sum+=conc;cnt++;
+  });
+  if(!ok){toast('⚠ Complete both trials first.');return;}
+  const avg=sum/cnt;
+  document.getElementById('p3avg').textContent=avg.toFixed(4);
+  p4.nc=avg;
+  document.getElementById('p4nc').textContent=avg.toFixed(4)+' M';
+  toast('✓ Average [NaOH] = '+avg.toFixed(4)+' M');
+}
+function saveP3(){
+  if(document.getElementById('p3avg').textContent==='—'){toast('⚠ Calculate [NaOH] first.');return;}
+  document.getElementById('tab2').classList.add('done');toast('✓ Part 3 saved!',1800);setTimeout(()=>goTab(3),600);
+}
+
+// ── PART 4 ──
+function calcWAPH(C,Ka){const d=Ka*Ka+4*Ka*C;return-Math.log10((-Ka+Math.sqrt(d))/2);}
+function calcTitPH(vmL,acid){
+  const Ka=acid.Ka,Ca=acid.C,Va=0.020,Cn=p4.nc,Vn=vmL/1000;
+  const ma=Ca*Va,mb=Cn*Vn,Vt=Va+Vn;
+  if(mb<ma*0.9998){
+    const mHA=ma-mb,mA=mb;
+    if(mA<1e-12)return calcWAPH(Ca,Ka);
+    return-Math.log10(Ka)+Math.log10(mA/mHA);
+  }else if(mb<ma*1.0002){
+    return 14+Math.log10(Math.sqrt((1e-14/Ka)*(ma/Vt)));
+  }else{
+    return 14+Math.log10((mb-ma)/Vt);
+  }
+}
+function buildP4Buret(){
+  document.getElementById('p4bwrap').innerHTML=`<svg width="72" height="210" viewBox="0 0 72 210">
+    <rect x="24" y="8" width="24" height="160" rx="2" fill="#f0f8ff" stroke="#7fb3d3" stroke-width="1.5"/>
+    <rect id="p4liq" x="25" y="9" width="22" height="159" fill="#3498db" opacity=".55"/>
+    ${[0,1,2,3,4,5].map((i)=>`<line x1="24" y1="${8+i*32}" x2="31" y2="${8+i*32}" stroke="#bbb" stroke-width="1"/><text x="22" y="${12+i*32}" text-anchor="end" font-size="7.5" fill="#888" font-family="monospace">${i*10}</text>`).join('')}
+    <polygon points="28,168 44,168 36,185" fill="#ccc" stroke="#aaa" stroke-width="1"/>
+    <text id="p4vins" x="36" y="200" text-anchor="middle" font-size="9" fill="var(--teal)" font-family="monospace" font-weight="600">0.00 mL</text>
+  </svg>`;
+}
+function updP4Buret(){
+  const pct=Math.max(0,100-(p4.vol/50)*100);
+  const fh=(pct/100)*159,topY=9+(159-fh);
+  const l=document.getElementById('p4liq');
+  if(l){l.setAttribute('y',topY);l.setAttribute('height',fh);}
+  const vi=document.getElementById('p4vins');
+  if(vi)vi.textContent=p4.vol.toFixed(2)+' mL';
+}
+function initP4(){
+  const code=document.getElementById('acode').value;
+  const acid=ACIDS[code];
+  p4={acid,nc:p4.nc||0.1,vol:0,pts:[],ep:null};
+  const iph=calcWAPH(acid.C,acid.Ka);
+  document.getElementById('p4iph').textContent=iph.toFixed(2);
+  p4.pts.push({v:0,pH:iph});
+  document.getElementById('p4main').style.display='block';
+  document.getElementById('p4phd').textContent=iph.toFixed(2);
+  document.getElementById('p4vd').textContent='0.00 mL';
+  document.getElementById('p4tb').innerHTML='';
+  addP4Row(0,0,iph,'Initial');
+  buildP4Buret();drawChart();
+  toast('Initialized — initial pH = '+iph.toFixed(2));
+}
+function addP4(v){
+  if(!p4.acid){toast('⚠ Initialize first.');return;}
+  p4.vol+=v;
+  const pH=calcTitPH(p4.vol,p4.acid);
+  document.getElementById('p4vd').textContent=p4.vol.toFixed(2)+' mL';
+  document.getElementById('p4phd').textContent=pH.toFixed(2);
+  updP4Buret();drawChart();
+}
+function recP4(){
+  if(!p4.acid){toast('⚠ Initialize first.');return;}
+  const pH=calcTitPH(p4.vol,p4.acid);
+  p4.pts.push({v:p4.vol,pH});
+  addP4Row(p4.pts.length,p4.vol,pH,'');
+  drawChart();
+  toast('📌 Recorded: '+p4.vol.toFixed(2)+' mL → pH '+pH.toFixed(2));
+}
+function addP4Row(n,v,pH,note){
+  const b=document.getElementById('p4tb');
+  const r=document.createElement('tr');
+  r.innerHTML=`<td style="font-family:var(--mono)">${n}</td><td style="font-family:var(--mono)">${typeof v==='number'?v.toFixed(2):v}</td><td style="font-family:var(--mono);font-weight:600;color:var(--teal)">${typeof pH==='number'?pH.toFixed(2):pH}</td><td><input class="finp" value="${note}" style="font-size:.73rem;padding:3px 7px"></td>`;
+  b.appendChild(r);b.parentElement.scrollTop=9999;
+}
+function findEP(){
+  if(!p4.acid){toast('⚠ Initialize first.');return;}
+  const ev=(p4.acid.C*0.020/p4.nc)*1000;
+  p4.ep=ev;
+  const ePH=calcTitPH(ev,p4.acid);
+  const hPH=calcTitPH(ev/2,p4.acid);
+  const Ka=Math.pow(10,-hPH);
+  document.getElementById('p4ep').style.display='block';
+  document.getElementById('p4ep').innerHTML=`Equiv. point: <strong>${ev.toFixed(2)} mL</strong>, pH = <strong>${ePH.toFixed(2)}</strong><br>½-neutralization: <strong>${(ev/2).toFixed(2)} mL</strong>, pH = pKₐ = <strong>${hPH.toFixed(2)}</strong><br>Kₐ = 10<sup>−${hPH.toFixed(2)}</sup> = <strong>${Ka.toExponential(2)}</strong>`;
+  drawChart();toast('Equivalence point marked!');
+}
+function drawChart(){
+  const cv=document.getElementById('phchart');if(!cv)return;
+  const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  const pd={l:44,r:16,t:16,b:42};
+  const cw=W-pd.l-pd.r,ch=H-pd.t-pd.b;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#fafafa';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#e5e5e5';ctx.lineWidth=1;
+  for(let i=0;i<=14;i+=2){const y=pd.t+ch-(i/14)*ch;ctx.beginPath();ctx.moveTo(pd.l,y);ctx.lineTo(pd.l+cw,y);ctx.stroke();ctx.fillStyle='#aaa';ctx.font='10px monospace';ctx.fillText(i,pd.l-26,y+4);}
+  for(let v=0;v<=40;v+=5){const x=pd.l+(v/40)*cw;ctx.beginPath();ctx.moveTo(x,pd.t);ctx.lineTo(x,pd.t+ch);ctx.stroke();ctx.fillStyle='#aaa';ctx.font='10px monospace';ctx.fillText(v,x-8,pd.t+ch+14);}
+  ctx.strokeStyle='#bbb';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(pd.l,pd.t);ctx.lineTo(pd.l,pd.t+ch);ctx.lineTo(pd.l+cw,pd.t+ch);ctx.stroke();
+  ctx.save();ctx.translate(11,pd.t+ch/2);ctx.rotate(-Math.PI/2);ctx.fillStyle='#444';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillText('pH',0,0);ctx.restore();
+  ctx.fillStyle='#444';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillText('Volume NaOH added (mL)',pd.l+cw/2,H-4);
+  if(!p4.acid)return;
+  // Faint full curve
+  ctx.strokeStyle='rgba(13,115,119,.13)';ctx.lineWidth=1.5;ctx.beginPath();
+  let f=true;for(let v=0;v<=39;v+=0.25){const pH=calcTitPH(v,p4.acid);const x=pd.l+(v/40)*cw,y=pd.t+ch-(pH/14)*ch;f?(ctx.moveTo(x,y),f=false):ctx.lineTo(x,y);}ctx.stroke();
+  // Recorded points
+  if(p4.pts.length>1){ctx.strokeStyle='#0d7377';ctx.lineWidth=2.5;ctx.beginPath();p4.pts.forEach((pt,i)=>{const x=pd.l+(pt.v/40)*cw,y=pd.t+ch-(pt.pH/14)*ch;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();}
+  p4.pts.forEach(pt=>{const x=pd.l+(pt.v/40)*cw,y=pd.t+ch-(pt.pH/14)*ch;ctx.fillStyle='#0d7377';ctx.beginPath();ctx.arc(x,y,4,0,2*Math.PI);ctx.fill();});
+  if(p4.ep){
+    const eq=p4.ep,ePH=calcTitPH(eq,p4.acid),ex=pd.l+(eq/40)*cw,ey=pd.t+ch-(ePH/14)*ch;
+    ctx.strokeStyle='#c0392b';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(ex,pd.t);ctx.lineTo(ex,pd.t+ch);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(pd.l,ey);ctx.lineTo(pd.l+cw,ey);ctx.stroke();
+    ctx.setLineDash([]);ctx.fillStyle='#c0392b';ctx.beginPath();ctx.arc(ex,ey,6,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#c0392b';ctx.font='bold 10px monospace';ctx.fillText('EP '+eq.toFixed(1)+'mL',ex+7,ey-5);
+    const hv=eq/2,hPH=calcTitPH(hv,p4.acid),hx=pd.l+(hv/40)*cw,hy=pd.t+ch-(hPH/14)*ch;
+    ctx.strokeStyle='#e8a020';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(hx,pd.t);ctx.lineTo(hx,pd.t+ch);ctx.stroke();
+    ctx.setLineDash([]);ctx.fillStyle='#e8a020';ctx.beginPath();ctx.arc(hx,hy,5,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#e8a020';ctx.font='10px monospace';ctx.fillText('½-EP pKa='+hPH.toFixed(2),hx+6,hy+13);
+  }
+}
+function saveP4(){document.getElementById('tab3').classList.add('done');toast('✓ Part 4 complete! Proceed to the quiz.',1800);setTimeout(()=>{goTab(4);initMCQ();},600);}
+
+// ── DRA TIMERS ──
+function startQT(q){
+  if(qtimers[q])return;
+  qsecs[q]=300;
+  const el=document.getElementById('qt'+q);
+  qtimers[q]=setInterval(()=>{
+    qsecs[q]--;
+    const m=Math.floor(qsecs[q]/60),s=qsecs[q]%60;
+    el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    el.className='qtimer'+(qsecs[q]<=60?' warn':'');
+    if(qsecs[q]<=0){
+      clearInterval(qtimers[q]);
+      el.textContent='00:00';el.className='qtimer exp';
+      document.getElementById('dra'+q).disabled=true;
+      document.getElementById('ql'+q).style.display='block';
+    }
+  },1000);
+}
+
+
+// ══ MCQ ══
+const MCQ_QUESTIONS=[
+  {
+    q:"Which of the following salts produces a BASIC solution when dissolved in water?",
+    opts:["NH₄NO₃ — ammonium nitrate","NaCl — sodium chloride","NaC₂H₃O₂ — sodium acetate","All three produce neutral solutions"],
+    ans:2,
+    exp:"NaC₂H₃O₂ is the salt of a weak acid (HC₂H₃O₂) and a strong base (NaOH). The acetate ion (C₂H₃O₂⁻) hydrolyzes in water to produce OH⁻, making the solution basic (pH ~8.9). NH₄NO₃ is acidic; NaCl is neutral."
+  },
+  {
+    q:"Why must NaOH be standardized before use in a precise acid-base titration?",
+    opts:["NaOH is too concentrated to use directly","NaOH absorbs CO₂ and water from air, changing its actual concentration","NaOH reacts with glass burets","NaOH is unstable and decomposes rapidly"],
+    ans:1,
+    exp:"NaOH is hygroscopic and absorbs CO₂ from air, forming Na₂CO₃, which reduces its effective concentration. Standardization with a primary standard like KHP (which is stable and has a known purity) gives the true molarity."
+  },
+  {
+    q:"At the ½-neutralization point of a weak acid titration, which statement is CORRECT?",
+    opts:["pH = 7 because half the acid is neutralized","pH = pKₐ because [HA] = [A⁻], so the log term in Henderson-Hasselbalch equals zero","The equivalence point has been reached","The indicator changes color at this point"],
+    ans:1,
+    exp:"At the ½-neutralization point, exactly half the acid has been converted to its conjugate base, so [HA] = [A⁻]. The Henderson-Hasselbalch equation gives: pH = pKₐ + log([A⁻]/[HA]) = pKₐ + log(1) = pKₐ. This is the simplest way to determine Kₐ from a titration curve."
+  },
+  {
+    q:"A weak acid (HA) is titrated with NaOH. At the equivalence point, which species is present in the highest concentration?",
+    opts:["HA — the original acid","NaOH — excess base","NaA — the sodium salt of the conjugate base","H₂O only"],
+    ans:2,
+    exp:"At the equivalence point, all the HA has been converted to its conjugate base A⁻ (present as NaA). The solution contains the sodium salt of the weak acid. Because A⁻ is a weak base, it hydrolyzes slightly, giving pH > 7 — which is why phenolphthalein (endpoint at pH ~8–10) is a good indicator choice for this titration."
+  }
+];
+let mcqAnswers={},mcqSubmitted=false,mcqQTimers={},mcqActiveSecs={};
+
+function initMCQ(){
+  const body=document.getElementById('mcqBody');
+  if(!body)return;
+  body.innerHTML='';
+  mcqAnswers={};mcqSubmitted=false;mcqQTimers={};mcqActiveSecs={};
+  MCQ_QUESTIONS.forEach((q,i)=>{
+    const card=document.createElement('div');
+    card.className='mcq-card';card.id='mcqcard'+i;
+    if(i>0)card.style.display='none';
+    card.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="mcq-qnum">Question ${i+1} of ${MCQ_QUESTIONS.length}</div>
+        <div class="mcq-qtimer" id="mcqt${i}">⏱ 1:30</div>
+      </div>
+      <div class="mcq-qtext">${q.q}</div>
+      <div class="mcq-opts" id="mcqopts${i}">
+        ${q.opts.map((opt,j)=>`<label class="mcq-opt" id="mcqopt${i}_${j}">
+          <input type="radio" name="mcq${i}" value="${j}" onchange="selectMCQ(${i},${j})">
+          <span>${opt}</span></label>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px">
+        ${i<MCQ_QUESTIONS.length-1
+          ?`<button class="btn bteal" onclick="nextMCQ(${i})" id="mcqnxt${i}" style="font-size:.8rem;padding:9px 20px">Next Question →</button>`
+          :`<button class="btn bteal" onclick="submitMCQ()" id="mcqfin${i}" style="font-size:.8rem;padding:9px 20px">Submit Quiz ✓</button>`}
+      </div>`;
+    body.appendChild(card);
+  });
+  startMCQTimer(0);
+}
+
+function startMCQTimer(i){
+  if(mcqSubmitted)return;
+  let secs=90;mcqActiveSecs[i]=secs;
+  const el=document.getElementById('mcqt'+i);
+  mcqQTimers[i]=setInterval(()=>{
+    secs--;mcqActiveSecs[i]=secs;
+    const m=Math.floor(secs/60),s=secs%60;
+    if(el){el.textContent='⏱ '+m+':'+(s<10?'0':'')+s;el.className='mcq-qtimer'+(secs<=30?' warn':'');}
+    if(secs<=0){
+      clearInterval(mcqQTimers[i]);
+      if(el){el.className='mcq-qtimer exp';el.textContent='⏱ Expired';}
+      lockMCQ(i);
+      if(i<MCQ_QUESTIONS.length-1)setTimeout(()=>advanceMCQ(i),700);
+      else setTimeout(submitMCQ,700);
+    }
+  },1000);
+}
+
+function lockMCQ(i){
+  document.querySelectorAll('#mcqopts'+i+' .mcq-opt').forEach(el=>{
+    el.style.cursor='default';const inp=el.querySelector('input');if(inp)inp.disabled=true;
+  });
+  const nb=document.getElementById('mcqnxt'+i),fb=document.getElementById('mcqfin'+i);
+  if(nb)nb.disabled=true;if(fb)fb.disabled=true;
+}
+
+function selectMCQ(qi,oi){
+  if(mcqSubmitted)return;
+  mcqAnswers[qi]=oi;
+  document.querySelectorAll('#mcqopts'+qi+' .mcq-opt').forEach((el,j)=>el.classList.toggle('selected',j===oi));
+}
+
+function nextMCQ(i){
+  clearInterval(mcqQTimers[i]);lockMCQ(i);advanceMCQ(i);
+}
+
+function advanceMCQ(i){
+  const cur=document.getElementById('mcqcard'+i),nxt=document.getElementById('mcqcard'+(i+1));
+  if(cur)cur.style.opacity='.55';
+  if(nxt){nxt.style.display='';nxt.scrollIntoView({behavior:'smooth',block:'center'});}
+  startMCQTimer(i+1);
+}
+
+function submitMCQ(){
+  if(mcqSubmitted)return;mcqSubmitted=true;
+  let score=0;
+  MCQ_QUESTIONS.forEach((q,i)=>{
+    if(mcqAnswers[i]===q.ans)score++;
+    lockMCQ(i);
+    const exp=document.createElement('div');
+    exp.style.cssText='margin-top:10px;padding:10px 14px;background:#f0f4fb;border-radius:3px;font-size:.78rem;color:#334155;line-height:1.55;border-left:3px solid var(--teal)';
+    exp.innerHTML='<strong>Explanation:</strong> '+q.exp;
+    document.getElementById('mcqcard'+i).appendChild(exp);
+  });
+  window.mcqScore=score;
+  const pct=Math.round(score/MCQ_QUESTIONS.length*100);
+  const banner=document.createElement('div');
+  banner.className='mcq-score-banner';
+  banner.innerHTML=`<div><div style="font-size:.78rem;opacity:.7;font-weight:600;text-transform:uppercase;letter-spacing:.8px">Quiz Score</div>
+    <div class="mcq-score-num">${score} / ${MCQ_QUESTIONS.length}</div>
+    <div class="mcq-feedback">${pct>=75?'✓ Good work — proceed to the analysis questions.':'Review the explanations above before continuing.'}</div></div>
+    <button class="btn bteal" style="font-size:.9rem;padding:12px 24px" onclick="goToDRA()">Continue to DRA →</button>`;
+  document.getElementById('mcqBody').insertBefore(banner,document.getElementById('mcqBody').firstChild);
+  window.scrollTo(0,0);
+  document.getElementById('tab4').classList.add('done');
+}
+
+function goToDRA(){goTab(5);}
+
+
+// ── REPORT ──
+function dlReport(){
+  const p1r=SALTS.map(s=>`<tr><td>${s.name}</td><td>${document.getElementById('rph'+s.id).value||'—'}</td><td>${document.getElementById('rpp'+s.id).value||'—'}</td><td>${document.getElementById('rab'+s.id).value||'—'}</td></tr>`).join('');
+  const p3r=[1,2].map(t=>`<tr><td>Trial ${t}</td><td>${document.getElementById('k'+t).value||'—'} g</td><td>${document.getElementById('vi'+t).value||'—'} mL</td><td>${document.getElementById('vf'+t).value||'—'} mL</td><td>${document.getElementById('vc'+t).value||'—'} mL</td><td>${document.getElementById('cn'+t).value||'—'} M</td></tr>`).join('');
+  const drar=[1,2,3,4,5].map(q=>`<tr><td style="font-weight:600;background:#f4f7fb;padding:8px 11px;vertical-align:top;width:18%">Q${q}</td><td style="padding:8px 11px;white-space:pre-wrap">${(document.getElementById('dra'+q)||{}).value||'—'}</td></tr>`).join('');
+  const obs=[['ob1','2-2. Phenolphthalein color'],['ob2','2-4/5. NaOH drops obs.'],['ob3','pH at endpoint']].map(([id,l])=>`<tr><td style="font-weight:600;background:#f4f7fb;padding:8px 11px">${l}</td><td style="padding:8px 11px">${document.getElementById(id).value||'—'}</td></tr>`).join('');
+  const epEl=document.getElementById('p4ep');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Exp 25 — ${STU.name}</title>
+<style>body{font-family:Arial,sans-serif;max-width:900px;margin:32px auto;color:#1a1a1a;font-size:13.5px}
+h1{color:#1a2e4a;font-size:20px;border-bottom:3px solid #0d7377;padding-bottom:7px;margin-bottom:5px}
+h2{color:#0d7377;font-size:14px;margin-top:22px;margin-bottom:7px}
+table{width:100%;border-collapse:collapse;margin-bottom:13px}
+th{background:#1a2e4a;color:#fff;padding:7px 11px;font-size:12px;text-align:left}
+td{padding:7px 11px;border-bottom:1px solid #e0e0e0;vertical-align:top}
+.meta{color:#555;font-size:12px;margin-top:4px}.stamp{text-align:right;color:#aaa;font-size:10px}</style>
+</head><body>
+<h1>⚗ Experiment 25 — Reactions of Acids and Bases</h1>
+<div class="meta"><strong>Student:</strong> ${STU.name} &nbsp;|&nbsp; <strong>ID:</strong> ${STU.id} &nbsp;|&nbsp; <strong>Section:</strong> ${STU.sec||'—'} &nbsp;|&nbsp; <strong>Acid:</strong> ${document.getElementById('acode').value}</div>
+<div class="stamp">Downloaded ${new Date().toLocaleString()}</div>
+<h2>Part 1 — pH of Salts</h2>
+<table><thead><tr><th>Salt</th><th>Approx. pH</th><th>Phenolphthalein</th><th>Classification</th></tr></thead><tbody>${p1r}</tbody></table>
+<h2>Part 2 — Investigating the Reaction</h2>
+<table><tbody>${obs}</tbody></table>
+<h2>Part 3 — Standardizing NaOH</h2>
+<table><thead><tr><th>Trial</th><th>KHP (g)</th><th>Vi (mL)</th><th>Vf (mL)</th><th>Vol used (mL)</th><th>[NaOH] (M)</th></tr></thead><tbody>${p3r}</tbody></table>
+<p><strong>Average [NaOH]:</strong> ${document.getElementById('p3avg').textContent} M</p>
+<h2>Part 4 — Titration Curve</h2>
+<p>${epEl?epEl.textContent||'—':'—'}</p>
+<h2>MCQ Score: '+((typeof window.mcqScore!='undefined')?window.mcqScore+' / 4':'N/A')+'</h2>
+<h2>DRA Analysis Questions</h2>
+<table><thead><tr><th>Q</th><th>Answer</th></tr></thead><tbody>${drar}</tbody></table>
+</body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`${STU.id}_${STU.name.replace(/\s+/g,'_')}_Exp25.html`;
+  a.click();
+  toast('✓ Report downloaded! Print → Save as PDF.');
+}
+
+// ── INIT ──
+window.addEventListener('load',()=>{
+  document.getElementById('inp-name').focus();
+  [1,2,3,4,5].forEach(q=>{
+    const ta=document.getElementById('dra'+q);
+    if(ta){
+      ta.addEventListener('keydown',()=>startQT(q),{once:true});
+      ta.addEventListener('paste',e=>{e.preventDefault();toast('⚠ Pasting is not allowed.',2500);});
+      ta.addEventListener('drop',e=>e.preventDefault());
+    }
+  });
+});
+</script>
+</body>
+</html>
